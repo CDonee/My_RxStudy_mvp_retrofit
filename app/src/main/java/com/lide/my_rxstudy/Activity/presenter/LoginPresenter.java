@@ -22,12 +22,12 @@ import rx.schedulers.Schedulers;
  * @time 2017/8/28  16:47
  * @desc ${TODD}
  */
-public class LogingPresenter extends Presenter {
+public class LoginPresenter extends Presenter {
 
     private IVieWloginFinish mIVieWloginFinish;
     private ILoginMode mILoginMode;
 
-    public LogingPresenter(Context context, IVieWloginFinish view) {
+    public LoginPresenter(Context context, IVieWloginFinish view) {
         super(context);
         this.mIVieWloginFinish = view;
         mILoginMode = new LoginModelImpl();
@@ -83,6 +83,7 @@ public class LogingPresenter extends Presenter {
             try {
                // Log.i("test", "onResponse---right-->" + responseBody.string());  //onResponse--->"d1b10dc2-63a1-46c3-b44d-1e9def60b00d"
                 String key = responseBody.string();
+                Log.d("test","key--->"+key);
                 mIVieWloginFinish.LoginFinishSuceess(key);
             } catch (IOException e) {
                 e.printStackTrace();

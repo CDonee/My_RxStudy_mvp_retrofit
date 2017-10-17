@@ -6,9 +6,10 @@ import rx.Observable;
 
 /**
  * @author DaiJiCheng
- * @time 2017/8/28  16:53
- * @desc ${TODD}
+ * @time 2017/10/17  9:36
+ * @desc ${获取设备列表}
  */
-public interface ILoginMode {
-    Observable<ResponseBody> login(RequestBody body);
+public interface IGetDevicesModel {
+
+     Observable<ResponseBody> getDevices(RequestBody requestBody);
 }

@@ -48,10 +48,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="22sp"
-        android:layout_marginTop="50sp"
         android:textColor="@android:color/holo_green_dark"
         android:text="ccccccccccccccc"
         android:id="@+id/text"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_below="@+id/button"
+        android:layout_alignParentBottom="true"
+        />
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:layout_alignTop="@+id/button3"
+        android:layout_toEndOf="@+id/button" android:layout_toRightOf="@+id/button"
+        android:text="获取设备"/>
 </RelativeLayout>

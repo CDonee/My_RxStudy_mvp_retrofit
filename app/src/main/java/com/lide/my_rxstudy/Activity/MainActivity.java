@@ -12,9 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.lide.my_rxstudy.Activity.bean.GetDevices.GetDeviceReq;
+import com.lide.my_rxstudy.Activity.bean.GetDevices.GetDeviceResp;
 import com.lide.my_rxstudy.Activity.bean.loginbeans.LoginReqest;
-import com.lide.my_rxstudy.Activity.presenter.LogingPresenter;
+import com.lide.my_rxstudy.Activity.global.Constants;
+import com.lide.my_rxstudy.Activity.presenter.GetDevicePresenter;
+import com.lide.my_rxstudy.Activity.presenter.LoginPresenter;
+import com.lide.my_rxstudy.Activity.util.SpUtil;
 import com.lide.my_rxstudy.Activity.view.IloginView.IVieWloginFinish;
+import com.lide.my_rxstudy.Activity.view.IloginView.IViewGetDevices;
 import com.lide.my_rxstudy.R;
 
 import butterknife.Bind;
@@ -23,7 +29,7 @@ import butterknife.OnClick;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 
-public class MainActivity extends AppCompatActivity implements IVieWloginFinish {
+public class MainActivity extends AppCompatActivity implements IVieWloginFinish ,IViewGetDevices {
 
     @Bind(R.id.button)
     Button mButton;
@@ -37,17 +43,17 @@ public class MainActivity extends AppCompatActivity implements IVieWloginFinish 
     EditText mEtPass;
     @Bind(R.id.text)
     TextView mText;
-    private LogingPresenter mPresenter;
+    private LoginPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mPresenter = new LogingPresenter(this, this);
+        mPresenter = new LoginPresenter(this, this);
     }
 
-    @OnClick({R.id.button, R.id.button2, R.id.button3})
+    @OnClick({R.id.button, R.id.button2, R.id.button3,R.id.button4})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button:
@@ -72,23 +78,41 @@ public class MainActivity extends AppCompatActivity implements IVieWloginFinish 
                 RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), toUploads);
                 mPresenter.login(body);
                 break;
+            case R.id.button4 :
+                String key = SpUtil.getString(this, Constants.APP_KEY, "");
+                Constants.USER_KEY = "APP_KEYS ".concat(key.replace("\"",""));
+                GetDevicePresenter presenter = new GetDevicePresenter(this,this);
+                GetDeviceReq  req = new GetDeviceReq();
+                req.isPageable = false;
+                String reqStr = new Gson().toJson(req);
+                RequestBody body1 = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), reqStr);
+                presenter.getDevices(body1);
+
+                break;
 
         }
     }
 
-
-
-
+public static String mKey ;
     @Override
     public void LoginFinishSuceess(String key) {
-        Log.d("test","key--->"+key);
-        mText.setText(key);
+        runOnUiThread(() -> {
+            Log.e("test","key = "+key);
+             mText.setText(key);
+             Constants.USER_KEY = key;
+            mKey = key;
+           SpUtil.putString(this, Constants.APP_KEY,key);
+        });
+
     }
 
     @Override
     public void LoginFinishFailer(String key) {
-        Log.d("test","key--->"+key);
-        runOnUiThread(() -> mText.setText(key));
+
+        runOnUiThread(() -> {
+            Log.d("test","key = "+key);
+            mText.setText(key);
+        });
 
     }
 
@@ -99,4 +123,21 @@ public class MainActivity extends AppCompatActivity implements IVieWloginFinish 
            mPresenter.destroy();
         }
     }
+
+    @Override
+    public void getDeviceSuceess(GetDeviceResp  resp) {
+        try {
+            mText.setText(resp.getData().get(0).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void getDevicesFalier(String key) {
+        showTost(key);
+    }
+     public void showTost(String msg) {
+         Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+     }
 }
