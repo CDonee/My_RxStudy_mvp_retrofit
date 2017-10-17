@@ -65,35 +65,43 @@ public class MainActivity extends AppCompatActivity implements IVieWloginFinish 
                 startActivity(new Intent(this, lesson_two.class));
                 break;
             case R.id.button3:
-                Toast.makeText(this, "登陸中。。", Toast.LENGTH_SHORT).show();
-                String userName = mEdUser.getText().toString().trim();
-                String passWord = mEtPass.getText().toString().trim();
-                LoginReqest reqest = new LoginReqest();
-                reqest.accountType = "EMPLOYEE";
-                reqest.businessModuleCode = "HDW";
-                reqest.warehouseCode = "001";
-                reqest.username = userName;
-                reqest.password = passWord;
-                String toUploads = new Gson().toJson(reqest);
-                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), toUploads);
-                mPresenter.login(body);
+                login();
                 break;
             case R.id.button4 :
-                String key = SpUtil.getString(this, Constants.APP_KEY, "");
-                Constants.USER_KEY = "APP_KEYS ".concat(key.replace("\"",""));
-                GetDevicePresenter presenter = new GetDevicePresenter(this,this);
-                GetDeviceReq  req = new GetDeviceReq();
-                req.isPageable = false;
-                String reqStr = new Gson().toJson(req);
-                RequestBody body1 = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), reqStr);
-                presenter.getDevices(body1);
+                getDevices();
 
                 break;
 
         }
     }
 
-public static String mKey ;
+    private void getDevices() {
+        String key = SpUtil.getString(this, Constants.APP_KEY, "");
+        Constants.USER_KEY = "APP_KEYS ".concat(key.replace("\"",""));
+        GetDevicePresenter presenter = new GetDevicePresenter(this,this);
+        GetDeviceReq req = new GetDeviceReq();
+        req.isPageable = false;
+        String reqStr = new Gson().toJson(req);
+        RequestBody body1 = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), reqStr);
+        presenter.getDevices(body1);
+    }
+
+    private void login() {
+        Toast.makeText(this, "登陸中。。", Toast.LENGTH_SHORT).show();
+        String userName = mEdUser.getText().toString().trim();
+        String passWord = mEtPass.getText().toString().trim();
+        LoginReqest reqest = new LoginReqest();
+        reqest.accountType = "EMPLOYEE";
+        reqest.businessModuleCode = "HDW";
+        reqest.warehouseCode = "001";
+        reqest.username = userName;
+        reqest.password = passWord;
+        String toUploads = new Gson().toJson(reqest);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), toUploads);
+        mPresenter.login(body);
+    }
+
+    public static String mKey ;
     @Override
     public void LoginFinishSuceess(String key) {
         runOnUiThread(() -> {
