@@ -52,7 +52,7 @@ public class RetrofitService {
 
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        //请求头
+        //添加请求头
             Interceptor headInterceptor = chain -> {
             Request original = chain.request();
                 Request request = null;
